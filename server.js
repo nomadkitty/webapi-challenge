@@ -4,6 +4,7 @@ const server = express();
 
 // import router
 const projectRouter = require("./routers/projectRouter.js");
+const actionRouter = require("./routers/actionRouter.js");
 
 // set up global middleware
 server.use(express.json());
@@ -12,6 +13,7 @@ server.use(logger);
 
 // set up router
 server.use("/api/projects", projectRouter);
+server.use("/api/projects", actionRouter);
 
 // Initial get request
 server.get("/", (req, res) => {
