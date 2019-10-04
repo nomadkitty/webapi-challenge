@@ -7,6 +7,7 @@ const actionDb = require("../data/helpers/actionModel.js");
 // import middleware
 const validateProjectId = require("../middleware/validateProjectID.js");
 const validateProject = require("../middleware/validateProject.js");
+const validateAction = require("../middleware/validateAction.js");
 
 const router = express.Router();
 
@@ -69,6 +70,23 @@ router.post("/", validateProject, (req, res) => {
     });
 });
 
+// post action by project id
+router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
+  const id = req.params.id;
+  const newAction = { ...req.body, project_id: id };
+
+  actionDb
+    .insert(newAction)
+    .then(action => {
+      res.status(201).json(action);
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "There was an error while saving the action to the database.",
+      });
+    });
+});
+
 // delete a project
 router.delete("/:id", validateProjectId, (req, res) => {
   const id = req.params.id;
@@ -78,7 +96,7 @@ router.delete("/:id", validateProjectId, (req, res) => {
       res.status(200).json(id);
     })
     .catch(err => {
-      res.status(500).json({ error: "Error removing porject" });
+      res.status(500).json({ error: "Error removing project" });
     });
 });
 
